@@ -5,6 +5,9 @@ import com.badlogic.gdx.math.Vector2;
 public class Bird extends MovingObject {
 
     private static final String PICNAME = "bird.png";
+    public boolean isFlying = false;
+    public boolean isDragged = false;
+
     public static final int WIDTH = 100;
     public static final int HEIGHT = 100;
 
@@ -18,12 +21,12 @@ public class Bird extends MovingObject {
 
     public void setSpeed(Vector2 speed)
     {
-        super.speed = speed;
+        super.speed = new Vector2(speed.x*5, speed.y*5);
     }
 
     @Override
     public void accelerate(float deltaTime) {
-        speed.y = speed.y + MovingObject.GRAVITY;
+        speed.y += MovingObject.GRAVITY * 60 * deltaTime;
     }
 
 }
