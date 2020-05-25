@@ -21,7 +21,7 @@ public final class Scenery {
      *
      * @param el
      */
-    public void addElement(com.mygdx.game.models.PhysicalObject el) {
+    public void addPhysicalElement(com.mygdx.game.models.PhysicalObject el) {
         scene.add(el);
     }
 
@@ -30,7 +30,7 @@ public final class Scenery {
      */
     public void addFloor() {
         for (int i = 5; i < AngryBird.WORLD_WIDTH / BLOCK_SIZE; i++) {
-            addElement( new com.mygdx.game.models.PhysicalObject("block.png", new Vector2(i * BLOCK_SIZE, AngryBird.FLOOR_HEIGHT), BLOCK_SIZE, BLOCK_SIZE));
+            addPhysicalElement( new com.mygdx.game.models.PhysicalObject("block.png", new Vector2(i * BLOCK_SIZE, AngryBird.FLOOR_HEIGHT), BLOCK_SIZE, BLOCK_SIZE));
         }
     }
 

@@ -36,15 +36,13 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	private Texture slingshotBack;
 	private Texture slingshotFront;
 
-	private Vector3 touchPos;
-	private Vector3 dragPos;
+	private Vector2 dragPos;
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		alea = new Random();
 		scenery = new Scenery();
-		touchPos = new Vector3();
-		dragPos = new Vector3();
+		dragPos = new Vector2();
 
 		slingshotBack = new Texture(Gdx.files.internal("slingshot1.png")) ;
 		slingshotFront = new Texture(Gdx.files.internal("slingshot2.png")) ;
@@ -75,15 +73,21 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 			bird.move(dt);
 			if (bird.getX() > WORLD_WIDTH || (bird.getX()) < 0-bird.getWidth() || bird.getY() < FLOOR_HEIGHT)
 			{
-				bird.freeze();
-				bird.setPosition(birdStart.x, birdStart.y);
-				bird.isFlying = false;
+				resetBird();
+			}
+			else if (bird.hitbox(waspy.getPosition())){
+				resetBird();
 			}
 		}
 		waspy.accelerate(dt);
 		waspy.move(dt);
 	}
-
+	private void resetBird()
+	{
+		bird.freeze();
+		bird.setPosition(birdStart.x, birdStart.y);
+		bird.isFlying = false;
+	}
 	@Override
 	public void dispose () {
 		batch.dispose();
@@ -107,18 +111,19 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		Vector3 actualPos = camera.unproject(new Vector3(screenX, screenY, 0));
 		if(bird.hitbox(new Vector2(actualPos.x, actualPos.y)) && !bird.isFlying) {
-			touchPos = camera.unproject(new Vector3(screenX - bird.getWidth() / 2, screenY + bird.getHeight() / 2, 0));
 			bird.isDragged = true;
 		}
 		return false;
 	}
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		Vector3 actualPos = camera.unproject(new Vector3(screenX, screenY, 0));
 		if(bird.isDragged && !bird.isFlying)
 		{
-			Vector2 speed = calculatePosition();
+			Vector2 speed = rubberFront.rubberBand();
+			Vector2 speed2 = shootZone(actualPos);
 
-			bird.setSpeed( new Vector2(-speed.x, -speed.y) );
+			bird.setSpeed( new Vector2((bird.getOriginX() + bird.WIDTH / 2 - speed2.x)*rubberFront.power, (bird.getOriginY() + bird.HEIGHT / 2 - speed2.y)*rubberFront.power));
 			bird.isFlying = true;
 			bird.isDragged = false;
 			rubberBack.reset();
@@ -133,36 +138,23 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		Vector3 actualPos = camera.unproject(new Vector3(screenX, screenY, 0));
 		if(bird.isDragged && !bird.isFlying)
 		{
-            dragPos = actualPos;
-            Vector2 position = new Vector2(birdStart.x + calculatePosition().x - bird.getWidth() / 2, birdStart.y + calculatePosition().y - bird.getHeight() / 2);
-            bird.setPosition(position.x, position.y);
+            dragPos = shootZone(actualPos);
+            bird.setPosition(dragPos.x, dragPos.y);
 
 
-			rubberBack.setDestination( position.x + bird.getWidth() / 2, position.y + bird.getHeight()/2);
-			rubberFront.setDestination(position.x + bird.getWidth() / 2, position.y + bird.getHeight()/2);
+			rubberBack.setDestination( dragPos.x + bird.getWidth() / 2, dragPos.y + bird.getHeight()/2);
+			rubberFront.setDestination(dragPos.x + bird.getWidth() / 2, dragPos.y + bird.getHeight()/2);
 		}
 		return false;
 	}
 
-	private Vector2 calculatePosition()
+	private Vector2 shootZone(Vector3 position)
 	{
-
-		if(dragPos == null) dragPos = new Vector3(0,0, 0);
-		float posX = dragPos.x-touchPos.x;
-		float posY = dragPos.y-touchPos.y;
-
-		if(posX >= birdStart.x)
-			posX = birdStart.x;
-		else if(posX < -150)
-			posX = -150;
-
-		if(posY >= birdStart.y)
-			posY = birdStart.y;
-		else if(posY < -150)
-			posY = -150;
-
-		return  new Vector2(posX, posY);
+		return new Vector2( Math.min( Math.max(0, position.x), birdStart.x),
+							Math.min( Math.max(FLOOR_HEIGHT, position.y), birdStart.y));
 	}
+
+
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {

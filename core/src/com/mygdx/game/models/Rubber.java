@@ -12,14 +12,13 @@ public class Rubber extends Sprite {
     private Vector2 origin;
     private Vector2 destination;
     private static int THICKNESS = 40;
+    public static final float power = 3f;
 
     public Rubber(float x, float y){
         super(new Texture(PICNAME));
         destination = new Vector2(0, 0);
-        setOrigin( x , y);
         origin = new Vector2(x,y);
-        setBounds(x, y - THICKNESS, -10, THICKNESS);
-        //setBounds(this.getOriginX(), this.getOriginY(), 0, 0);
+        reset();
     }
 
     public void setDestination(float x, float y)
@@ -28,7 +27,18 @@ public class Rubber extends Sprite {
         calculatePosition();
     }
 
-    public void reset() { setDestination(origin.x, origin.y); }
+    public Vector2 rubberBand() {
+        Vector2 power = destination.sub(origin);
+        power.y = -power.y;
+
+        return power;
+    }
+
+    public void reset() {
+        destination = new Vector2(0, 0);
+        setBounds(origin.x, origin.y - THICKNESS, -10, THICKNESS);
+        setOrigin(origin.x, origin.y);
+    }
 
     private void calculatePosition() {
         Vector2 vector = destination.sub(origin);

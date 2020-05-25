@@ -21,7 +21,7 @@ public class Bird extends MovingObject {
 
     public void setSpeed(Vector2 speed)
     {
-        super.speed = new Vector2(speed.x*5, speed.y*5);
+        super.speed = new Vector2(speed.x, speed.y);
     }
 
     @Override
