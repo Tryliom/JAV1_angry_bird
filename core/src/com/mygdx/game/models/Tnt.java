@@ -13,4 +13,8 @@ public class Tnt extends PhysicalObject {
         super(PICNAME, position, WIDTH, HEIGHT);
         this.negativePoints = negativePoints;
     }
+
+    public int getNegativePoints() {
+        return negativePoints;
+    }
 }

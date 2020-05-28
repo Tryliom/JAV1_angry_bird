@@ -15,6 +15,7 @@ public final class Scenery {
 
     private ArrayList<PhysicalObject> scene;
     private ArrayList<TextualObject> decor;
+    protected PhysicalObject touchedObject;
 
     public Scenery() {
         decor = new ArrayList<TextualObject>();
@@ -46,15 +47,17 @@ public final class Scenery {
             add(new WoodenBlock(new Vector2(i * BLOCK_SIZE, AngryBird.FLOOR_HEIGHT)));
         }
     }
-
     public boolean overlaps(PhysicalObject object){
         for (PhysicalObject p : scene)
             if (p.overlaps(object)) {
-                //TODO si cochon => set points
+                 touchedObject = p;
                 return true;
             }
-
         return false;
+    }
+
+    public PhysicalObject getTouchedObject(){
+        return touchedObject;
     }
     /**
      * Render the whole scenary

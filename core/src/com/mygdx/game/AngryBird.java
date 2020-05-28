@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -38,14 +40,27 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	private Texture slingshotBack;
 	private Texture slingshotFront;
 
+	private Score score;
 	private Vector2 dragPos;
+	private static GlyphLayout glyphLayout = new GlyphLayout();
+	private BitmapFont font;
 	@Override
 	public void create () {
+
+		camera = new OrthographicCamera();
+		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
+		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+		camera.update();
+
 		batch = new SpriteBatch();
 		scenery = new Scenery();
 		dragPos = new Vector2();
+		score = new Score();
 
 		background = new Texture(Gdx.files.internal("background.jpg"));
+		font = new BitmapFont();
+		font.getData().setScale(4);
+
 
 		birdStart = new Vector2(190, 320);
 		bird = new Bird(birdStart);
@@ -56,6 +71,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		slingshotFront = new Texture(Gdx.files.internal("slingshot2.png")) ;
 		rubberBandBack = new RubberBand(birdStart.x + bird.getWidth() - 10, birdStart.y + bird.getHeight()/2);
 		rubberBandFront = new RubberBand(birdStart.x + bird.getWidth()/2 - 10, birdStart.y + bird.getHeight()/2);
+
 
 		//scenery elements
 		try {
@@ -70,10 +86,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 			e.printStackTrace();
 		}
 
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
-		camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-		camera.update();
 
 		Gdx.input.setInputProcessor(this);
 	}
@@ -83,17 +95,20 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		if (bird.isFrozen()) {
 			bird.accelerate(dt);
 			bird.move(dt);
-			if (bird.getX() > WORLD_WIDTH || (bird.getX()) < 0-bird.getWidth() || bird.getY() < FLOOR_HEIGHT)
+			if (bird.getX() > WORLD_WIDTH || (bird.getX()) < 0-bird.getWidth() || bird.getY() < FLOOR_HEIGHT || bird.overlaps(wasp))
 			{
 				resetBird();
 			}
-			else if (bird.overlaps(wasp) || scenery.overlaps(bird)){
+			else if (scenery.overlaps(bird)){
+				score.calculate(scenery.getTouchedObject());
+				glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
 				resetBird();
 			}
 		}
 		wasp.accelerate(dt);
 		wasp.move(dt);
 	}
+
 
 	private void resetBird()
 	{
@@ -187,7 +202,8 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		rubberBandBack.draw(batch);
 		bird.draw(batch);
 		rubberBandFront.draw(batch);
-		batch.draw(slingshotFront, 200,FLOOR_HEIGHT);
+		batch.draw(slingshotFront, 200, FLOOR_HEIGHT);
+		font.draw(batch, glyphLayout,  WORLD_WIDTH-glyphLayout.width-20, WORLD_HEIGHT-glyphLayout.height);
 		batch.end();
 	}
 

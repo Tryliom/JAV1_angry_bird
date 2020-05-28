@@ -14,6 +14,10 @@ public class Pig extends TextualObject {
         this.Points = points;
     }
 
+    public int getPoints() {
+        return Points;
+    }
+
     public void sayWord(){
 
     }
