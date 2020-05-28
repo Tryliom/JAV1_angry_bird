@@ -16,11 +16,9 @@ public final class Scenery {
     public static final int Y_MAX = AngryBird.WORLD_HEIGHT;
 
     private ArrayList<PhysicalObject> scene;
-    private ArrayList<TextualObject> decor;
     protected PhysicalObject touchedObject;
 
     public Scenery() {
-        decor = new ArrayList<TextualObject>();
         scene = new ArrayList<PhysicalObject>();
     }
 
@@ -50,6 +48,7 @@ public final class Scenery {
             add(new WoodenBlock(new Vector2(i * BLOCK_SIZE, AngryBird.FLOOR_HEIGHT)));
         }
     }
+
     public boolean overlaps(PhysicalObject object){
         for (PhysicalObject p : scene)
             if (p.overlaps(object)) {
@@ -61,6 +60,16 @@ public final class Scenery {
 
     public PhysicalObject getTouchedObject(){
         return touchedObject;
+    }
+
+    public ArrayList<Pig> getPigs()
+    {
+        ArrayList<Pig> pigs = new ArrayList<Pig>();
+        for (PhysicalObject object : scene)
+            if (object.getClass() == Pig.class) {
+                pigs.add((Pig)object);
+            }
+        return pigs;
     }
     /**
      * Render the whole scenary

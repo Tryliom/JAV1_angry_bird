@@ -18,7 +18,7 @@ public class Pig extends TextualObject {
         return Points;
     }
 
-    public void sayWord(){
-
+    public String sayWord(){
+        return this.getWord();
     }
 }

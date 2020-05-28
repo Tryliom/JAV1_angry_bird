@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 import com.mygdx.game.models.*;
 
+import java.util.ArrayList;
+
 
 public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
@@ -31,6 +33,10 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	private RubberBand rubberBandBack;
 	private RubberBand rubberBandFront;
 
+	private ArrayList<Bubble> bubbles;
+	private Bubble bubble;
+	private float bubbleTime;
+
 	private OrthographicCamera camera;
 
 	private SpriteBatch batch;
@@ -39,7 +45,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	private Texture slingshotFront;
 
 	private Score score;
-	private Vector2 dragPos;
 	private static GlyphLayout glyphLayout;
 	private BitmapFont font;
 	//endregion
@@ -53,7 +58,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
 		batch = new SpriteBatch();
 		scenery = new Scenery();
-		dragPos = new Vector2();
 		score = new Score();
 
 		background = new Texture(Gdx.files.internal("background.jpg"));
@@ -64,8 +68,9 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
 		birdStart = new Vector2(190, 320);
 		bird = new Bird(birdStart);
-
 		wasp = new Wasp(new Vector2(AngryBird.WORLD_WIDTH/2, AngryBird.WORLD_HEIGHT/2), new Vector2(20,50));
+		bubble = new Bubble(new Vector2(-Bubble.WIDTH,0), "", 0);
+		bubbleTime = 2;
 
 		slingshotBack = new Texture(Gdx.files.internal("slingshot1.png")) ;
 		slingshotFront = new Texture(Gdx.files.internal("slingshot2.png")) ;
@@ -78,7 +83,12 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 			scenery.add(new Tnt(new Vector2(400,FLOOR_HEIGHT), 20));
 			scenery.add(new Tnt(new Vector2(600,FLOOR_HEIGHT), 20));
 			scenery.add(new Tnt(new Vector2(680,FLOOR_HEIGHT), 20));
-			scenery.add(new Pig(new Vector2(640,FLOOR_HEIGHT), 20));
+			Pig pig = new Pig(new Vector2(640,FLOOR_HEIGHT), 20);
+			pig.setWord("Bondour");
+			scenery.add(pig);
+			pig = new Pig(new Vector2(640,FLOOR_HEIGHT), 20);
+			pig.setWord("Diogo");
+			scenery.add(pig);
 		} catch (OutOfSceneryException e) {
 			//TODO comment faire une pop up??
 			System.err.println ("** OutOfSceneryException **");
@@ -104,6 +114,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 				resetBird();
 			}
 		}
+		if (bubble.getDuration() > 0) bubble.countdown(dt);
 		wasp.accelerate(dt);
 		wasp.move(dt);
 	}
@@ -141,6 +152,13 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		if(bird.getBoundingRectangle().contains(actualPos.x, actualPos.y) && !bird.isFlying) {
 			bird.isDragged = true;
 		}
+
+		for ( Pig pig : scenery.getPigs() ) {
+			if(pig.getBoundingRectangle().contains(actualPos.x, actualPos.y)) {
+				bubble = new Bubble(new Vector2(pig.getX() , pig.getY() + pig.getHeight()), pig.sayWord(),  bubbleTime);
+				bubble.translateX(-bubble.getWidth()/1.8f);
+			}
+		}
 		return false;
 	}
 	@Override
@@ -165,7 +183,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		Vector3 actualPos = camera.unproject(new Vector3(screenX, screenY, 0));
 		if(bird.isDragged && !bird.isFlying)
 		{
-            dragPos = shootZone(actualPos);
+            Vector2 dragPos = shootZone(actualPos);
             bird.setPosition(dragPos.x, dragPos.y);
 
 			rubberBandBack.setDestination( dragPos.x + bird.getWidth() / 2, dragPos.y + bird.getHeight()/2);
@@ -194,6 +212,9 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		wasp.draw(batch);
 		scenery.draw(batch);
+		if(bubble.getDuration() > 0) {
+			bubble.drawWord(batch);
+		}
 		batch.draw(slingshotBack, 200,FLOOR_HEIGHT);
 		rubberBandBack.draw(batch);
 		bird.draw(batch);
