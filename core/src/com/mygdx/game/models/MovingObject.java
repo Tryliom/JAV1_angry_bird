@@ -34,10 +34,4 @@ public abstract class MovingObject extends PhysicalObject {
     {
         return new Vector2(this.getX(), this.getY());
     }
-    public boolean hitbox(Vector2 position){
-        if((position.x >= this.getX() && position.x <= this.getX() + this.getWidth()) && (position.y >= this.getY() && position.y <= this.getY() + this.getHeight()))
-            return true;
-        return false;
-    }
-
 }

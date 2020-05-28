@@ -8,8 +8,8 @@ import com.mygdx.game.AngryBird;
 public class Wasp extends MovingObject {
 
     private static final String PICNAME = "wasp.png";
-    public static final int WIDTH = 140;
-    public static final int HEIGHT = 140;
+    public static final int WIDTH = 100;
+    public static final int HEIGHT = 100;
 
     Vector2 cycleLength = new Vector2(1300,900); // time (1000 = 1sec)
     Vector2 cycleScale = new Vector2(AngryBird.WORLD_WIDTH/3-this.getWidth(), AngryBird.WORLD_HEIGHT/4); // zone where wasp move from centerPos
@@ -29,8 +29,8 @@ public class Wasp extends MovingObject {
     @Override
     public void move(float deltaTime) {
         long globalCounter = TimeUtils.timeSinceMillis( AngryBird.startTime );
-        float x  = (float) Math.sin(globalCounter/cycleLength.x)*cycleScale.x + centerPos.x;
-        float y = (float) Math.cos(globalCounter/cycleLength.y)*cycleScale.y + centerPos.y;
+        float x  = (float) Math.sin(globalCounter/cycleLength.x)*cycleScale.x + centerPos.x + getWidth();
+        float y = (float) Math.cos(globalCounter/cycleLength.y)*cycleScale.y + centerPos.y + getWidth();
 
         this.setPosition(x,y);
     }

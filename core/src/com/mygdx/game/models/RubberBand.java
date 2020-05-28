@@ -7,14 +7,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
-public class Rubber extends Sprite {
+public class RubberBand extends Sprite {
     public static String PICNAME = "rubber.png";
     private Vector2 origin;
     private Vector2 destination;
     private static int THICKNESS = 40;
     public static final float power = 3f;
 
-    public Rubber(float x, float y){
+    public RubberBand(float x, float y){
         super(new Texture(PICNAME));
         destination = new Vector2(0, 0);
         origin = new Vector2(x,y);
