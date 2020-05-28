@@ -10,16 +10,14 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 import com.mygdx.game.models.*;
 
-import java.awt.Dialog;
-import java.util.Random;
 
 public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
+	//region Declaration
 	public static long startTime = TimeUtils.millis();
 	public static final int WORLD_WIDTH = 1600;
 	public static final int WORLD_HEIGHT = 900;
@@ -42,8 +40,9 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
 	private Score score;
 	private Vector2 dragPos;
-	private static GlyphLayout glyphLayout = new GlyphLayout();
+	private static GlyphLayout glyphLayout;
 	private BitmapFont font;
+	//endregion
 	@Override
 	public void create () {
 
@@ -60,7 +59,8 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		background = new Texture(Gdx.files.internal("background.jpg"));
 		font = new BitmapFont();
 		font.getData().setScale(4);
-
+		glyphLayout = new GlyphLayout();
+		glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
 
 		birdStart = new Vector2(190, 320);
 		bird = new Bird(birdStart);
@@ -71,7 +71,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		slingshotFront = new Texture(Gdx.files.internal("slingshot2.png")) ;
 		rubberBandBack = new RubberBand(birdStart.x + bird.getWidth() - 10, birdStart.y + bird.getHeight()/2);
 		rubberBandFront = new RubberBand(birdStart.x + bird.getWidth()/2 - 10, birdStart.y + bird.getHeight()/2);
-
 
 		//scenery elements
 		try {
@@ -109,7 +108,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		wasp.move(dt);
 	}
 
-
 	private void resetBird()
 	{
 		bird.freeze();
@@ -117,8 +115,12 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		bird.isFlying = false;
 	}
 
-	// ------------------------------------
-	// Touch Events
+	private Vector2 shootZone(Vector3 position)	{
+		return new Vector2( Math.min( Math.max(0, position.x), birdStart.x),
+				Math.min( Math.max(FLOOR_HEIGHT, position.y), birdStart.y));
+	}
+
+	//region Touch Events
 	@Override
 	public boolean keyDown(int keycode) {
 		return false;
@@ -172,13 +174,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		return false;
 	}
 
-	private Vector2 shootZone(Vector3 position)	{
-		return new Vector2( Math.min( Math.max(0, position.x), birdStart.x),
-							Math.min( Math.max(FLOOR_HEIGHT, position.y), birdStart.y));
-	}
-
-
-
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
 		return false;
@@ -188,8 +183,9 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	public boolean scrolled(int amount) {
 		return false;
 	}
-	// ------------------------------------
-	// RENDER
+	//endregion
+
+	//region Render
 	@Override
 	public void render () {
 		update();
@@ -211,4 +207,5 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	public void dispose () {
 		batch.dispose();
 	}
+	//endregion
 }

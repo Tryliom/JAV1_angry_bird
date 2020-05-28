@@ -12,6 +12,8 @@ public final class Scenery {
     public static final int BLOCK_SIZE = 80;
     public static final int X_MIN = 400;
     public static final int X_MAX = AngryBird.WORLD_WIDTH;
+    public static final int Y_Min = AngryBird.FLOOR_HEIGHT;
+    public static final int Y_MAX = AngryBird.WORLD_HEIGHT;
 
     private ArrayList<PhysicalObject> scene;
     private ArrayList<TextualObject> decor;
@@ -28,7 +30,8 @@ public final class Scenery {
      * @param object
      */
     public void add(PhysicalObject object) throws OutOfSceneryException {
-        if(object.getX() < X_MIN || object.getX()+object.getWidth() > X_MAX || object.getY() < AngryBird.FLOOR_HEIGHT )
+        if( object.getX() < X_MIN || object.getX()+object.getWidth() > X_MAX
+            || object.getY() < Y_Min || object.getY()+object.getHeight() > Y_MAX )
         {
             throw new OutOfSceneryException("Veuillez replacer votre block");
         }
