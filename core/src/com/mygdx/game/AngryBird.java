@@ -15,6 +15,7 @@ import com.mygdx.game.customExceptions.OutOfSceneryException;
 import com.mygdx.game.models.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 
@@ -25,7 +26,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	public static final int WORLD_WIDTH = 1600;
 	public static final int WORLD_HEIGHT = 900;
 	public static final int FLOOR_HEIGHT = 120;
-	private	final String[] words = {"Pomme", "Patate", "Fraise", "Cookie", "banane"};
+	private	ArrayList<String> words;
 
 	private Texture background;
 
@@ -53,6 +54,9 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	//endregion
 	@Override
 	public void create () {
+
+		words = new ArrayList<String>();
+		words.addAll(Arrays.asList( "Pomme", "Patate", "Fraise", "Cookie", "banane"));
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -84,35 +88,47 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
 		Gdx.input.setInputProcessor(this);
 	}
+	
 	private void createScene()
 	{
 		//scenery elements
 		try {
 			//TODO : faut-il faire un rdm ici?
 			Random generator = new Random();
-			panel = new Panel( new Vector2(20, WORLD_HEIGHT), words[generator.nextInt(words.length)]);
+			panel = new Panel( new Vector2(20, WORLD_HEIGHT), words.get(generator.nextInt(words.size())));
 
 			scenery = new Scenery();
 			scenery.addFloor();
-			scenery.add(new Tnt(new Vector2(400,FLOOR_HEIGHT), 20));
-			scenery.add(new Tnt(new Vector2(600,FLOOR_HEIGHT), 20));
-			scenery.add(new Tnt(new Vector2(680,FLOOR_HEIGHT), 20));
-			//TODO : CHECK pour la création des cochons
-			Pig pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
-			pig.setWord(words[generator.nextInt(words.length)]);
-			scenery.add(pig);
-			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
-			pig.setWord(panel.getWord());
-			scenery.add(pig);
-			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
-			pig.setWord(words[generator.nextInt(words.length)]);
-			scenery.add(pig);
-			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
-			pig.setWord(words[generator.nextInt(words.length)]);
-			scenery.add(pig);
-			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
-			pig.setWord(words[generator.nextInt(words.length)]);
-			scenery.add(pig);
+			int limitOfTNT = 4;
+			while (limitOfTNT > 0)
+			{
+				try {
+					scenery.add(new Tnt(new Vector2(generator.nextInt(WORLD_WIDTH-400) + 400 ,FLOOR_HEIGHT), 20));
+					limitOfTNT--;
+				} catch (OutOfSceneryException e)
+				{
+					Gdx.app.log("OutOfSceneryException", e.getMessage());
+				}
+			}
+			int limitOfPig =  words.size();
+			ArrayList<String> wordsNoUsed = new ArrayList<String>();
+			wordsNoUsed.addAll(words);
+			while (limitOfPig > 0)
+			{
+				try {
+					String word = wordsNoUsed.get(generator.nextInt(words.size()));
+					Pig pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
+					pig.setWord(word);
+					scenery.add(pig);
+					wordsNoUsed.remove(word);
+					limitOfPig--;
+				} catch (OutOfSceneryException e)
+				{
+					Gdx.app.log("OutOfSceneryException", e.getMessage());
+				}catch (Exception e){
+					Gdx.app.log("Angry", e.getMessage());
+				}
+			}
 		} catch (OutOfSceneryException e) {
 			Gdx.app.log("OutOfSceneryException", e.getMessage());
 		}
@@ -139,8 +155,10 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 						pig.setPosition(-pig.getWidth(), 0); //TODO : delete pig when touched...
 					}
 				}
-				else
+				else {
+					scenery.getTouchedObject().setX(-scenery.getTouchedObject().getWidth());
 					score.calculate(scenery.getTouchedObject());
+				}
 
 				glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
 				resetBird();

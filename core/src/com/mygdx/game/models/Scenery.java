@@ -38,12 +38,12 @@ public final class Scenery {
     }
 
     private void moveObject(PhysicalObject object){
-        for (PhysicalObject p : scene)
-            if (p.overlaps(object))
-            {
-                object.setY(p.getY()+p.getHeight()+1);
+        for (PhysicalObject p : scene) {
+            if (p.overlaps(object)) {
+                object.setY(p.getY() + p.getHeight() + 1);
                 moveObject(object);
             }
+        }
     }
 
     /**
