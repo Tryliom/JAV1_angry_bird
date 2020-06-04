@@ -33,11 +33,17 @@ public final class Scenery {
         {
             throw new OutOfSceneryException("Veuillez replacer votre block");
         }
+        moveObject(object);
+        scene.add(object);
+    }
+
+    private void moveObject(PhysicalObject object){
         for (PhysicalObject p : scene)
             if (p.overlaps(object))
+            {
                 object.setY(p.getY()+p.getHeight()+1);
-
-        scene.add(object);
+                moveObject(object);
+            }
     }
 
     /**
@@ -80,4 +86,7 @@ public final class Scenery {
         for (PhysicalObject p : scene) p.draw(batch);
     }
 
+    public ArrayList<PhysicalObject> getScene() {
+        return scene;
+    }
 }

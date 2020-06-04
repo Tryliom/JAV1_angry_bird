@@ -4,7 +4,7 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Pig extends TextualObject {
     private int Points;
-
+    public boolean Touched=false;
     private static final String PICNAME = "pig.png";
     public static final int WIDTH = 80;
     public static final int HEIGHT = 80;

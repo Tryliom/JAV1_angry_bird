@@ -15,6 +15,7 @@ import com.mygdx.game.customExceptions.OutOfSceneryException;
 import com.mygdx.game.models.*;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class AngryBird extends ApplicationAdapter implements InputProcessor {
@@ -24,6 +25,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	public static final int WORLD_WIDTH = 1600;
 	public static final int WORLD_HEIGHT = 900;
 	public static final int FLOOR_HEIGHT = 120;
+	private	final String[] words = {"Pomme", "Patate", "Fraise", "Cookie", "banane"};
 
 	private Texture background;
 
@@ -33,7 +35,8 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	private RubberBand rubberBandBack;
 	private RubberBand rubberBandFront;
 
-	private ArrayList<Bubble> bubbles;
+
+	private Panel panel;
 	private Bubble bubble;
 	private float bubbleTime;
 
@@ -57,7 +60,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		camera.update();
 
 		batch = new SpriteBatch();
-		scenery = new Scenery();
 		score = new Score();
 
 		background = new Texture(Gdx.files.internal("background.jpg"));
@@ -65,6 +67,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		font.getData().setScale(4);
 		glyphLayout = new GlyphLayout();
 		glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
+
 
 		birdStart = new Vector2(190, 320);
 		bird = new Bird(birdStart);
@@ -77,26 +80,42 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		rubberBandBack = new RubberBand(birdStart.x + bird.getWidth() - 10, birdStart.y + bird.getHeight()/2);
 		rubberBandFront = new RubberBand(birdStart.x + bird.getWidth()/2 - 10, birdStart.y + bird.getHeight()/2);
 
+		createScene();
+
+		Gdx.input.setInputProcessor(this);
+	}
+	private void createScene()
+	{
 		//scenery elements
 		try {
+			//TODO : faut-il faire un rdm ici?
+			Random generator = new Random();
+			panel = new Panel( new Vector2(20, WORLD_HEIGHT), words[generator.nextInt(words.length)]);
+
+			scenery = new Scenery();
 			scenery.addFloor();
 			scenery.add(new Tnt(new Vector2(400,FLOOR_HEIGHT), 20));
 			scenery.add(new Tnt(new Vector2(600,FLOOR_HEIGHT), 20));
 			scenery.add(new Tnt(new Vector2(680,FLOOR_HEIGHT), 20));
-			Pig pig = new Pig(new Vector2(640,FLOOR_HEIGHT), 20);
-			pig.setWord("Bondour");
+			//TODO : CHECK pour la création des cochons
+			Pig pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
+			pig.setWord(words[generator.nextInt(words.length)]);
 			scenery.add(pig);
-			pig = new Pig(new Vector2(640,FLOOR_HEIGHT), 20);
-			pig.setWord("Diogo");
+			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
+			pig.setWord(panel.getWord());
+			scenery.add(pig);
+			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
+			pig.setWord(words[generator.nextInt(words.length)]);
+			scenery.add(pig);
+			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
+			pig.setWord(words[generator.nextInt(words.length)]);
+			scenery.add(pig);
+			pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
+			pig.setWord(words[generator.nextInt(words.length)]);
 			scenery.add(pig);
 		} catch (OutOfSceneryException e) {
-			//TODO comment faire une pop up??
-			System.err.println ("** OutOfSceneryException **");
-			e.printStackTrace();
+			Gdx.app.log("OutOfSceneryException", e.getMessage());
 		}
-
-
-		Gdx.input.setInputProcessor(this);
 	}
 
 	public void update() {
@@ -109,7 +128,20 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 				resetBird();
 			}
 			else if (scenery.overlaps(bird)){
-				score.calculate(scenery.getTouchedObject());
+				if(scenery.getTouchedObject().getClass() == Pig.class)
+				{
+					Pig pig = (Pig) scenery.getTouchedObject();
+					if(pig.getWord() == panel.getWord()){
+						score.calculate(scenery.getTouchedObject());
+						createScene();
+					}
+					else {
+						pig.setPosition(-pig.getWidth(), 0); //TODO : delete pig when touched...
+					}
+				}
+				else
+					score.calculate(scenery.getTouchedObject());
+
 				glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
 				resetBird();
 			}
@@ -211,6 +243,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		batch.begin();
 		batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		wasp.draw(batch);
+		panel.draw(batch);
 		scenery.draw(batch);
 		if(bubble.getDuration() > 0) {
 			bubble.drawWord(batch);
