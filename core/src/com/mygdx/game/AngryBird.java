@@ -152,7 +152,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 						createScene();
 					}
 					else {
-						pig.setPosition(-pig.getWidth(), 0); //TODO : delete pig when touched...
+						scenery.removePig(pig);
 					}
 				}
 				else {

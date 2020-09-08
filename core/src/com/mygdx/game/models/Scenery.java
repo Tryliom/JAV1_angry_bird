@@ -67,6 +67,9 @@ public final class Scenery {
     public PhysicalObject getTouchedObject(){
         return touchedObject;
     }
+    public void removePig(Pig pig){
+        scene.remove(pig);
+    }
 
     public ArrayList<Pig> getPigs()
     {
