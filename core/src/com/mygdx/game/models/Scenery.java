@@ -16,7 +16,6 @@ public final class Scenery {
     public static final int Y_MAX = AngryBird.WORLD_HEIGHT;
 
     private ArrayList<PhysicalObject> scene;
-    protected PhysicalObject touchedObject;
 
     public Scenery() {
         scene = new ArrayList<PhysicalObject>();
@@ -28,16 +27,15 @@ public final class Scenery {
      * @param object
      */
     public void add(PhysicalObject object) throws OutOfSceneryException {
-        if( object.getX() < X_MIN || object.getX()+object.getWidth() > X_MAX
-            || object.getY() < Y_Min || object.getY()+object.getHeight() > Y_MAX )
-        {
+        if (object.getX() < X_MIN || object.getX() + object.getWidth() > X_MAX
+                || object.getY() < Y_Min || object.getY() + object.getHeight() > Y_MAX) {
             throw new OutOfSceneryException("Veuillez replacer votre block");
         }
         moveObject(object);
         scene.add(object);
     }
 
-    private void moveObject(PhysicalObject object){
+    private void moveObject(PhysicalObject object) {
         for (PhysicalObject p : scene) {
             if (p.overlaps(object)) {
                 object.setY(p.getY() + p.getHeight() + 1);
@@ -55,31 +53,27 @@ public final class Scenery {
         }
     }
 
-    public boolean overlaps(PhysicalObject object){
+    public PhysicalObject overlaps(PhysicalObject object) {
         for (PhysicalObject p : scene)
             if (p.overlaps(object)) {
-                 touchedObject = p;
-                return true;
+                return p;
             }
-        return false;
+        return null;
     }
 
-    public PhysicalObject getTouchedObject(){
-        return touchedObject;
-    }
-    public void removePig(Pig pig){
-        scene.remove(pig);
+    public void removeObject(PhysicalObject object) {
+        scene.remove(object);
     }
 
-    public ArrayList<Pig> getPigs()
-    {
+    public ArrayList<Pig> getPigs() {
         ArrayList<Pig> pigs = new ArrayList<Pig>();
         for (PhysicalObject object : scene)
             if (object.getClass() == Pig.class) {
-                pigs.add((Pig)object);
+                pigs.add((Pig) object);
             }
         return pigs;
     }
+
     /**
      * Render the whole scenary
      *

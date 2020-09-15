@@ -143,21 +143,22 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 			{
 				resetBird();
 			}
-			else if (scenery.overlaps(bird)){
-				if(scenery.getTouchedObject().getClass() == Pig.class)
+			else if (scenery.overlaps(bird) != null){
+				PhysicalObject touchedObject = scenery.overlaps(bird);
+				if(touchedObject.getClass() == Pig.class)
 				{
-					Pig pig = (Pig) scenery.getTouchedObject();
+					Pig pig = (Pig) touchedObject;
 					if(pig.getWord() == panel.getWord()){
-						score.calculate(scenery.getTouchedObject());
+						score.calculate(pig);
 						createScene();
 					}
 					else {
-						scenery.removePig(pig);
+						scenery.removeObject(pig);
 					}
 				}
 				else {
-					scenery.getTouchedObject().setX(-scenery.getTouchedObject().getWidth());
-					score.calculate(scenery.getTouchedObject());
+					score.calculate(touchedObject);
+					scenery.removeObject(touchedObject);
 				}
 
 				glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
