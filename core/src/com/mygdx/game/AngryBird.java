@@ -100,8 +100,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 			scenery = new Scenery();
 			scenery.addFloor();
 			int limitOfTNT = 4;
-			while (limitOfTNT > 0)
-			{
+			for (int i = 0; i < limitOfTNT; i++) {
 				try {
 					scenery.add(new Tnt(new Vector2(generator.nextInt(WORLD_WIDTH-400) + 400 ,FLOOR_HEIGHT), 20));
 					limitOfTNT--;
