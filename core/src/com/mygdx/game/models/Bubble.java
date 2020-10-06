@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.models.data.Word;
 
 public class Bubble extends TextualObject {
     private static final String PICNAME = "bubble.png";
@@ -15,7 +16,7 @@ public class Bubble extends TextualObject {
     protected static GlyphLayout glyphLayout;
     protected BitmapFont font;
 
-    public Bubble(Vector2 position, String word, float duration) {
+    public Bubble(Vector2 position, Word word, float duration) {
         super(PICNAME, position, WIDTH, HEIGHT);
         this.duration = duration;
         this.word = word;
@@ -23,7 +24,7 @@ public class Bubble extends TextualObject {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
-        glyphLayout = new GlyphLayout(font, word);
+        glyphLayout = new GlyphLayout(font, word.getWord());
 
         setSize(glyphLayout.width * 2, glyphLayout.height * 4);
     }

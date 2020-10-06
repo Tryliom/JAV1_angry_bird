@@ -1,11 +1,13 @@
 package com.mygdx.game.models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Vector2;
 import com.mygdx.game.AngryBird;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public final class Scenery {
 
@@ -50,6 +52,20 @@ public final class Scenery {
     public void addFloor() throws OutOfSceneryException {
         for (int i = 5; i < AngryBird.WORLD_WIDTH / BLOCK_SIZE; i++) {
             add(new WoodenBlock(new Vector2(i * BLOCK_SIZE, AngryBird.FLOOR_HEIGHT)));
+        }
+    }
+    /**
+     * Lay down a line of blocks to act a floor to the scene
+     */
+    public void addTNT(int quantity) throws OutOfSceneryException {
+        Random generator = new Random();
+        for (int i = 0; i < quantity; i++) {
+            try {
+                add(new Tnt(new Vector2(generator.nextInt(AngryBird.WORLD_WIDTH-400) + 400 ,AngryBird.FLOOR_HEIGHT), 20));
+            } catch (OutOfSceneryException e) {
+                Gdx.app.log("OutOfSceneryException", e.getMessage());
+                i--;
+            }
         }
     }
 

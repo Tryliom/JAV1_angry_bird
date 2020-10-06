@@ -8,11 +8,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 import com.mygdx.game.models.*;
+import com.mygdx.game.models.data.Vocabulary;
+import com.mygdx.game.models.data.VocabularyProvider;
+import com.mygdx.game.models.data.Word;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,7 +30,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	public static final int WORLD_WIDTH = 1600;
 	public static final int WORLD_HEIGHT = 900;
 	public static final int FLOOR_HEIGHT = 120;
-	private	ArrayList<String> words;
 
 	private Texture background;
 
@@ -41,6 +44,10 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	private Bubble bubble;
 	private float bubbleTime;
 
+	private VocabularyProvider vocabularyProvider;
+	private Vocabulary vocabulary;
+//	private	ArrayList<String> words;
+
 	private OrthographicCamera camera;
 
 	private SpriteBatch batch;
@@ -54,9 +61,9 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	//endregion
 	@Override
 	public void create () {
-
-		words = new ArrayList<String>();
-		words.addAll(Arrays.asList( "Pomme", "Patate", "Fraise", "Cookie", "banane"));
+		vocabularyProvider = vocabularyProvider.getInstance();
+//		words = new ArrayList<String>();
+//		words.addAll(Arrays.asList( "Pomme", "Patate", "Fraise", "Cookie", "banane"));
 
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -76,7 +83,6 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 		birdStart = new Vector2(190, 320);
 		bird = new Bird(birdStart);
 		wasp = new Wasp(new Vector2(AngryBird.WORLD_WIDTH/2, AngryBird.WORLD_HEIGHT/2), new Vector2(20,50));
-		bubble = new Bubble(new Vector2(-Bubble.WIDTH,0), "", 0);
 		bubbleTime = 2;
 
 		slingshotBack = new Texture(Gdx.files.internal("slingshot1.png")) ;
@@ -91,43 +97,50 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 	
 	private void createScene()
 	{
+		Gdx.app.log("scenery", "Creating scenery");
 		//scenery elements
 		try {
-			//TODO : faut-il faire un rdm ici?
 			Random generator = new Random();
-			panel = new Panel( new Vector2(20, WORLD_HEIGHT), words.get(generator.nextInt(words.size())));
+
+			Gdx.app.log("scenery", "get vocabulary");
+			vocabulary = vocabularyProvider.pickRandomVocabulary();
+			ArrayList<Word> voc = new ArrayList<Word>();
+			for (int i = 0; i < 6; i++) {
+				// i don't know if a best method exists 😂, i use habitually a filter on c#
+				Word word;
+				do {
+					word = vocabulary.pickRandomWord();
+				} while (word.allocated);
+				word.allocated = true;
+				voc.add(word);
+			}
+			Gdx.app.log("scenery", String.format("Total of words: %s", voc.size()) );
+
+			panel = new Panel( new Vector2(20, WORLD_HEIGHT), voc.get(MathUtils.random(voc.size()-1)));
+
+			//create empty bubble used to all pigs
+			bubble = new Bubble(new Vector2(-Bubble.WIDTH,0), voc.get(0), 0);
+			bubbleTime = 2;
 
 			scenery = new Scenery();
 			scenery.addFloor();
-			int limitOfTNT = 4;
-			for (int i = 0; i < limitOfTNT; i++) {
+			scenery.addTNT(5);
+
+			Gdx.app.log("scenery", "pigs placed on scenery");
+			for (int i = 0; i < voc.size(); i++) {
 				try {
-					scenery.add(new Tnt(new Vector2(generator.nextInt(WORLD_WIDTH-400) + 400 ,FLOOR_HEIGHT), 20));
-					limitOfTNT--;
-				} catch (OutOfSceneryException e)
-				{
-					Gdx.app.log("OutOfSceneryException", e.getMessage());
-				}
-			}
-			int limitOfPig =  words.size();
-			ArrayList<String> wordsNoUsed = new ArrayList<String>();
-			wordsNoUsed.addAll(words);
-			while (limitOfPig > 0)
-			{
-				try {
-					String word = wordsNoUsed.get(generator.nextInt(words.size()));
 					Pig pig = new Pig(new Vector2(generator.nextInt(WORLD_WIDTH-400)+400,FLOOR_HEIGHT), 20);
-					pig.setWord(word);
 					scenery.add(pig);
-					wordsNoUsed.remove(word);
-					limitOfPig--;
-				} catch (OutOfSceneryException e)
-				{
+					pig.setWord(voc.get(i));
+				} catch (OutOfSceneryException e) {
 					Gdx.app.log("OutOfSceneryException", e.getMessage());
+					i--;
 				}catch (Exception e){
 					Gdx.app.log("Angry", e.getMessage());
+					i--;
 				}
 			}
+			Gdx.app.log("scenery", "scenery created");
 		} catch (OutOfSceneryException e) {
 			Gdx.app.log("OutOfSceneryException", e.getMessage());
 		}
@@ -160,7 +173,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 					scenery.removeObject(touchedObject);
 				}
 
-				glyphLayout.setText(font, "Score: ".concat( String.valueOf(score.getScore()) ) );
+				glyphLayout.setText(font, String.format("Score: %s", score.getScore()));
 				resetBird();
 			}
 		}
@@ -205,7 +218,7 @@ public class AngryBird extends ApplicationAdapter implements InputProcessor {
 
 		for ( Pig pig : scenery.getPigs() ) {
 			if(pig.getBoundingRectangle().contains(actualPos.x, actualPos.y)) {
-				bubble = new Bubble(new Vector2(pig.getX() , pig.getY() + pig.getHeight()), pig.sayWord(),  bubbleTime);
+				bubble = new Bubble(new Vector2(pig.getX() , pig.getY() + pig.getHeight()), pig.getWord(),  bubbleTime);
 				bubble.translateX(-bubble.getWidth()/1.8f);
 			}
 		}

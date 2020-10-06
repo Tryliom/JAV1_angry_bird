@@ -14,6 +14,10 @@ public class Vocabulary {
         words = new ArrayList<Word>();
     }
 
+    public ArrayList<Word> getWords() {
+        return words;
+    }
+
     public  void  addWord(Word word){
         words.add(word);
     }
