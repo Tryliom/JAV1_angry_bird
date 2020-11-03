@@ -242,6 +242,7 @@ public class VocabularyProvider {
         vocabulary.addWord(word);
         word = new Word("le beau-père", "father in-law");
         vocabulary.addWord(word);
+        vocabularies.add(vocabulary);
 
     }
 }
