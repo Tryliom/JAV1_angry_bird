@@ -1,9 +1,6 @@
 package com.mygdx.game.models;
 
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.models.data.Word;
 
 public abstract class TextualObject extends PhysicalObject {
     protected Word word;

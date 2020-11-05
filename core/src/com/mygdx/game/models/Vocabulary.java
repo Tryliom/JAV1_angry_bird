@@ -1,7 +1,7 @@
-package com.mygdx.game.models.data;
+package com.mygdx.game.models;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.AngryBird;
+import com.mygdx.game.models.Word;
 
 import java.util.ArrayList;
 

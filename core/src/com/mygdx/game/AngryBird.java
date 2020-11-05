@@ -14,12 +14,11 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 import com.mygdx.game.models.*;
-import com.mygdx.game.models.data.Vocabulary;
-import com.mygdx.game.models.data.VocabularyProvider;
-import com.mygdx.game.models.data.Word;
+import com.mygdx.game.models.Vocabulary;
+import com.mygdx.game.providers.VocabularyProvider;
+import com.mygdx.game.models.Word;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 

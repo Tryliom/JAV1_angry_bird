@@ -1,4 +1,4 @@
-package com.mygdx.game.models.data;
+package com.mygdx.game.models;
 
 public class Word {
     private String word;
