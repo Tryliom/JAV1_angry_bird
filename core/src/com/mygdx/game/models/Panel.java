@@ -22,7 +22,7 @@ public class Panel extends TextualObject {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
-        glyphLayout = new GlyphLayout(font, word.getTranslatedWord());
+        glyphLayout = new GlyphLayout(font, word.getEnglishWord());
 
         setSize(glyphLayout.width * 2, HEIGHT);
     }

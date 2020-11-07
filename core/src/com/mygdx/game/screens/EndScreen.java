@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.AngryBird;
 
-public class WelcomeScreen extends ApplicationAdapter implements InputProcessor {
+public class EndScreen extends ApplicationAdapter implements InputProcessor {
 
     private Texture background;
     private OrthographicCamera camera;
@@ -30,7 +30,7 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
         background = new Texture(Gdx.files.internal("background.jpg"));
 
         title = new BitmapFont();
-        title.setColor(Color.ROYAL);
+        title.setColor(Color.RED);
         title.getData().setScale(6);
 
         Gdx.input.setInputProcessor(this);
@@ -41,7 +41,7 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
         batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
-        title.draw(batch, "Hello", WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+        title.draw(batch, "Game Over / End", WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
         batch.end();
     }
 
@@ -62,9 +62,7 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        GameScreen playScreen = new GameScreen();
-        playScreen.create();
-        AngryBird.stackScreens.push(playScreen);
+        AngryBird.getInstance().pop();//TODO fonctionne pas
         return true;
     }
 

@@ -23,7 +23,7 @@ public class Bubble extends TextualObject {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
-        glyphLayout = new GlyphLayout(font, word.getWord());
+        glyphLayout = new GlyphLayout(font, word.getFrenchWord());
 
         setSize(glyphLayout.width * 2, glyphLayout.height * 4);
     }
@@ -39,9 +39,9 @@ public class Bubble extends TextualObject {
     }
 
 
-    public void drawWord(SpriteBatch batch)
+    public void draw(SpriteBatch batch)
     {
-        draw(batch);
+        super.draw(batch);
 
         final float fontX = getX() + (getWidth() - glyphLayout.width) / 2;
         final float fontY = getY() + (getHeight() + glyphLayout.height*2f) / 2;

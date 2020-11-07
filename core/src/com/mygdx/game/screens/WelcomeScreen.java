@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.mygdx.game.AngryBird;
 
-public class StartScreen extends ApplicationAdapter implements InputProcessor {
+public class WelcomeScreen extends ApplicationAdapter implements InputProcessor {
 
     private Texture background;
     private OrthographicCamera camera;
@@ -41,7 +41,7 @@ public class StartScreen extends ApplicationAdapter implements InputProcessor {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
         batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
-        title.draw(batch, "Hello", WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+        title.draw(batch, "Welcome", WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
         batch.end();
     }
 
@@ -62,9 +62,7 @@ public class StartScreen extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        GameScreen playScreen = new GameScreen();
-        playScreen.create();
-        AngryBird.stackScreens.push(playScreen);
+        AngryBird.getInstance().push(AngryBird.SCREENS_NAME.Game);
         return true;
     }
 

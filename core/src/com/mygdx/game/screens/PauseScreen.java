@@ -41,7 +41,7 @@ public class PauseScreen extends ApplicationAdapter implements InputProcessor {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
         batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
-        title.draw(batch, "Welcome", WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+        title.draw(batch, "Pause", WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
         batch.end();
     }
 

@@ -1,8 +1,8 @@
 package com.mygdx.game.interfaces;
 
 
-public interface Score {
-    public void incrementScore();
+public interface Scoreable {
+    public int incrementScore();
 
-    public void decrementScore();
+    public int decrementScore();
 }

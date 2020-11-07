@@ -18,10 +18,33 @@ public class Vocabulary {
         return words;
     }
 
-    public  void  addWord(Word word){
+    public Word findWord(Word wordToFind)
+    {
+        for (Word word : words)
+            if (word == wordToFind)
+                return word;
+        return null;
+    }
+
+    public void  addWord(Word word){
         words.add(word);
     }
     public  Word pickRandomWord(){
         return  words.get(MathUtils.random(0,words.size()-1));
+    }
+    public Word pickUnusedRandomWord(){
+        Word word;
+        do {
+            word = words.get(MathUtils.random(0,words.size()-1));
+        } while (word.allocated);
+        return word;
+    }
+    public int countUsedWords(){
+        int i = 0;
+        for (Word word : words) {
+            if(word.allocated == false)
+                i++;
+        }
+        return i;
     }
 }

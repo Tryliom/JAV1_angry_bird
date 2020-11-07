@@ -17,17 +17,22 @@ public class VocabularyProvider {
     }
 
     private VocabularyProvider() {
-        vocabularies = new ArrayList<Vocabulary>();
-        createVocs();
+        vocabularies = new ArrayList<>();
+        createVocabularies();
     }
 
     public Vocabulary pickRandomVocabulary() {
-        return vocabularies.get(MathUtils.random(0, vocabularies.size() - 1));
+        Vocabulary vocabulary;
+        do{
+            vocabulary = vocabularies.get(MathUtils.random(0, vocabularies.size() - 1));
+        }while (vocabulary.countUsedWords() == 0);
+        return vocabulary;
     }
     
-    private void createVocs() {
+    private void createVocabularies() {
         Word word;
 
+        //region money
         Vocabulary vocabulary = new Vocabulary("money");
         word = new Word("la banque", "the bank");
         vocabulary.addWord(word);
@@ -104,7 +109,8 @@ public class VocabularyProvider {
         word = new Word("un reçu", "receipt");
         vocabulary.addWord(word);
         vocabularies.add(vocabulary);
-
+        //endregion
+        //region meubles
         vocabulary = new Vocabulary("meubles");
         word = new Word("une table", "a table");
         vocabulary.addWord(word);
@@ -147,7 +153,8 @@ public class VocabularyProvider {
         word = new Word("un oreiller", "a pillow");
         vocabulary.addWord(word);
         vocabularies.add(vocabulary);
-
+        //endregion
+        //region color
         vocabulary = new Vocabulary("colors");
         word = new Word("blanc", "white");
         vocabulary.addWord(word);
@@ -186,7 +193,8 @@ public class VocabularyProvider {
         word = new Word("doré", "golden");
         vocabulary.addWord(word);
         vocabularies.add(vocabulary);
-
+        //endregion
+        //region family
         vocabulary = new Vocabulary("family");
         word = new Word("le père", "the father");
         vocabulary.addWord(word);
@@ -245,6 +253,6 @@ public class VocabularyProvider {
         word = new Word("le beau-père", "father in-law");
         vocabulary.addWord(word);
         vocabularies.add(vocabulary);
-
+        //endregion
     }
 }

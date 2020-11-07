@@ -3,7 +3,10 @@ package com.mygdx.game.models;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mygdx.game.AngryBird;
+
+import static com.mygdx.game.screens.GameScreen.WORLD_WIDTH;
+import static com.mygdx.game.screens.GameScreen.WORLD_HEIGHT;
+import static com.mygdx.game.screens.GameScreen.startTime;
 
 public class Wasp extends MovingObject {
 
@@ -12,7 +15,7 @@ public class Wasp extends MovingObject {
     public static final int HEIGHT = 100;
 
     Vector2 cycleLength = new Vector2(1300,900); // time (1000 = 1sec)
-    Vector2 cycleScale = new Vector2(AngryBird.WORLD_WIDTH/3-this.getWidth(), AngryBird.WORLD_HEIGHT/4); // zone where wasp move from centerPos
+    Vector2 cycleScale = new Vector2(WORLD_WIDTH/3-this.getWidth(), WORLD_HEIGHT/4); // zone where wasp move from centerPos
     Vector2 centerPos;
 
     public Wasp(Vector2 position, Vector2 speed){
@@ -22,13 +25,13 @@ public class Wasp extends MovingObject {
 
     @Override
     public void accelerate(float dt) {
-        //Vector2 folly = new Vector2(AngryBird.alea.nextFloat()-(getX()/AngryBird.WORLD_WIDTH), AngryBird.alea.nextFloat()-(getX()/AngryBird.WORLD_HEIGHT));
+        //Vector2 folly = new Vector2(AngryBirdOLD.alea.nextFloat()-(getX()/AngryBirdOLD.WORLD_WIDTH), AngryBirdOLD.alea.nextFloat()-(getX()/AngryBirdOLD.WORLD_HEIGHT));
         //peed = speed.add(folly.scl(AGITATION));
     }
 
     @Override
     public void move(float deltaTime) {
-        long globalCounter = TimeUtils.timeSinceMillis( AngryBird.startTime );
+        long globalCounter = TimeUtils.timeSinceMillis( startTime );
         float x  = (float) Math.sin(globalCounter/cycleLength.x)*cycleScale.x + centerPos.x + getWidth();
         float y = (float) Math.cos(globalCounter/cycleLength.y)*cycleScale.y + centerPos.y + getWidth();
 

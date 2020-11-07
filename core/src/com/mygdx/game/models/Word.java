@@ -1,23 +1,23 @@
 package com.mygdx.game.models;
 
 public class Word {
-    private String word;
-    private String translatedWord;
+    private String frenchWord;
+    private String englishWord;
     public boolean allocated; // pig as the word?
     public boolean found; // word already founded?
 
-    public Word(String word, String translatedWord){
-        this.word = word;
-        this.translatedWord = translatedWord;
+    public Word(String frenchWord, String englishWord){
+        this.frenchWord = frenchWord;
+        this.englishWord = englishWord;
         allocated = false;
         found = false;
     }
 
-    public String getWord(){
-        return  word;
+    public String getFrenchWord(){
+        return frenchWord;
     }
 
-    public String getTranslatedWord() {
-        return translatedWord;
+    public String getEnglishWord() {
+        return englishWord;
     }
 }
