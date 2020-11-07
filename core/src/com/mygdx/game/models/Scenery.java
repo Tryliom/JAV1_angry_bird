@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import static com.mygdx.game.screens.GameScreen.WORLD_WIDTH;
 import static com.mygdx.game.screens.GameScreen.FLOOR_HEIGHT;
 import static com.mygdx.game.screens.GameScreen.WORLD_HEIGHT;
 import static com.mygdx.game.screens.GameScreen.rand;
+import static com.mygdx.game.screens.GameScreen.startTime;
 
 public final class Scenery {
 
@@ -69,7 +71,7 @@ public final class Scenery {
      * Add a new element on the scenery
      * @param object
      */
-    private void add(PhysicalObject object) throws OutOfSceneryException {
+    public void add(PhysicalObject object) throws OutOfSceneryException {
         if (isOutOfScenery(object) || object.getX()+object.getWidth() > WORLD_WIDTH || object.getY() < Y_MIN || object.getY() + object.getHeight() > Y_MAX) {
             throw new OutOfSceneryException("Veuillez replacer votre block");
         }

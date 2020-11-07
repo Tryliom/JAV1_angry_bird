@@ -20,6 +20,12 @@ public class VocabularyProvider {
         vocabularies = new ArrayList<>();
         createVocabularies();
     }
+    public int totalOfVocabularies(){
+        return vocabularies.size();
+    }
+    public Vocabulary pickVocabulary(int index) {
+        return vocabularies.get(index);
+    }
 
     public Vocabulary pickRandomVocabulary() {
         Vocabulary vocabulary;

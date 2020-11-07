@@ -3,10 +3,9 @@ package com.mygdx.game.screens;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -15,12 +14,14 @@ import com.mygdx.game.AngryBird;
 import com.mygdx.game.interfaces.Scoreable;
 import com.mygdx.game.models.Bird;
 import com.mygdx.game.models.Bubble;
+import com.mygdx.game.models.Button;
 import com.mygdx.game.models.Panel;
 import com.mygdx.game.models.PhysicalObject;
 import com.mygdx.game.models.Pig;
 import com.mygdx.game.models.Scenery;
 import com.mygdx.game.models.Vocabulary;
 import com.mygdx.game.models.Wasp;
+import com.mygdx.game.models.Label;
 import com.mygdx.game.providers.VocabularyProvider;
 
 import java.util.Random;
@@ -29,6 +30,8 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
     public static Random rand;
     private OrthographicCamera camera;
     private SpriteBatch batch;
+
+    public boolean pause;
 
     public static long startTime = TimeUtils.millis();
     public static final int WORLD_WIDTH = 1600;
@@ -48,25 +51,28 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
     private Scenery scenery;
 
     private int score;
+    private Button scoreButton;
+    private Button pauseButton;
     private VocabularyProvider vocabularyProvider;
-    private Vocabulary vocabulary;
-    private static GlyphLayout glyphLayout;
-    private BitmapFont font;
+    public Vocabulary vocabulary;
+    private Label scoreLabel;
 
     @Override
     public void create() {
         rand = new Random(System.currentTimeMillis());
         batch = new SpriteBatch();
         score = 0;
-
-        font = new BitmapFont();
-        font.getData().setScale(4);
-        glyphLayout = new GlyphLayout();
+        scoreLabel = new Label(Color.WHITE);
 
         background = new Texture(Gdx.files.internal("background.jpg"));
-
         vocabularyProvider = vocabularyProvider.getInstance();
         vocabulary = vocabularyProvider.pickRandomVocabulary();
+//        vocabulary = vocabularyProvider.pickVocabulary(0);
+        //buttons
+        pauseButton = new Button("pause.png", "pause", new Vector2(WORLD_WIDTH / 2 + 75, WORLD_HEIGHT - 150), 100, 100);
+        pauseButton.setX(WORLD_WIDTH - pauseButton.getWidth() - 20);
+        scoreButton = new Button("score.png", "score", new Vector2(WORLD_WIDTH / 3 + 75, pauseButton.getY()), 150, 100);
+        scoreButton.setX(pauseButton.getX() - scoreButton.getWidth() - 20);
 
         newScene();
 
@@ -74,6 +80,7 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
+        pause = false;
 
         Gdx.input.setInputProcessor(this);
     }
@@ -83,6 +90,12 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
             vocabulary = vocabularyProvider.pickRandomVocabulary();
 
         scenery = new Scenery(vocabulary);
+        try {
+            scenery.add(pauseButton);
+            scenery.add(scoreButton);
+        } catch (Exception e) {
+            Gdx.app.log("GameScreen", "Score: " + e.getMessage());
+        }
         bird = scenery.bird;
         wasp = scenery.wasp;
         bubble = new Bubble(new Vector2(-Bubble.WIDTH, 0), vocabulary.pickRandomWord(), 0);
@@ -90,13 +103,13 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
     }
 
     public void update() {
+        scoreLabel.setText(String.format("Score: %s", score));
+
         float dt = Gdx.graphics.getDeltaTime(); // number of milliseconds elapsed since last render
-        glyphLayout.setText(font, String.format("Score: %s", score));
         scenery.update(dt);
         if (scenery.isOutOfScenery(bird)) {
             bird.reset();
-        }
-        else if(bird.overlaps(wasp)) {
+        } else if (bird.overlaps(wasp)) {
             this.create();
             AngryBird.getInstance().push(AngryBird.SCREENS_NAME.End);
         } else if (scenery.overlaps(bird) != null) {
@@ -112,7 +125,7 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         if (Pig.class.equals(object.getClass())) {
             Pig pig = (Pig) object;
             if (pig.getWord().getEnglishWord() == scenery.panel.getWord().getEnglishWord()) {
-                vocabulary.findWord(scenery.panel.getWord()).found=true;
+                vocabulary.findWord(scenery.panel.getWord()).found = true;
                 score += pig.incrementScore();
                 newScene();
                 return;
@@ -133,7 +146,7 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         if (bubble != null && bubble.getDuration() > 0) {
             bubble.draw(batch);
         }
-        font.draw(batch, glyphLayout, WORLD_WIDTH - glyphLayout.width - 20, WORLD_HEIGHT - glyphLayout.height);
+        scoreLabel.draw(batch, scoreButton.getX() - scoreLabel.getWidth() - 50, WORLD_HEIGHT - scoreLabel.getHeight() - 25);
         scenery.panel.draw(batch); // I can't understand why this not works on scenery.draw(batch) ....
         batch.end();
     }
@@ -161,7 +174,6 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Gdx.app.log("PIGGY", "LOL HAHAHA");
         Vector3 actualPos = camera.unproject(new Vector3(screenX, screenY, 0));
         PhysicalObject object = scenery.whichObjectTouched(actualPos.x, actualPos.y);
         if (object == null)
@@ -173,9 +185,28 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         } else if (Bird.class.equals(object.getClass())) {
             bird.isDragged = true;
         } else if (Panel.class.equals(object.getClass())) {
-            Gdx.app.log("PIGGY", ((Panel) object).getWord().getEnglishWord());
+            Gdx.app.log("GameScreen", ((Panel) object).getWord().getEnglishWord());
+        } else if (Button.class.equals(object.getClass())) {
+            manageButtons((Button) object);
         }
         return true;
+    }
+
+    public void manageButtons(Button button) {
+        switch (button.getName()) {
+            case "score":
+                bird.reset(); // i not founnd how to pause correctly the game...
+                Gdx.app.log("GameScreen", "score touched");
+                AngryBird.getInstance().push(AngryBird.SCREENS_NAME.Score);
+                break;
+            case "pause":
+                pause = !pause;
+                AngryBird.getInstance().push(AngryBird.SCREENS_NAME.Pause);
+                Gdx.app.log("GameScreen", "pause touched");
+                break;
+            default:
+                break;
+        }
     }
 
     @Override

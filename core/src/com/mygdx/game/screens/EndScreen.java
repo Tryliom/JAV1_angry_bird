@@ -15,11 +15,11 @@ public class EndScreen extends ApplicationAdapter implements InputProcessor {
     private Texture background;
     private OrthographicCamera camera;
     private SpriteBatch batch;
-
     private BitmapFont title;
 
     public static final int WORLD_WIDTH = 1600;
     public static final int WORLD_HEIGHT = 900;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -62,7 +62,7 @@ public class EndScreen extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        AngryBird.getInstance().pop();//TODO fonctionne pas
+        AngryBird.getInstance().pop();
         return true;
     }
 
@@ -85,4 +85,5 @@ public class EndScreen extends ApplicationAdapter implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
 }

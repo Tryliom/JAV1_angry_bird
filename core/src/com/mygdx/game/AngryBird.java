@@ -6,12 +6,10 @@ import com.badlogic.gdx.InputProcessor;
 import com.mygdx.game.screens.EndScreen;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.screens.PauseScreen;
+import com.mygdx.game.screens.ScoreScreen;
 import com.mygdx.game.screens.WelcomeScreen;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 import java.util.Stack;
 
 public class AngryBird extends ApplicationAdapter {
@@ -24,6 +22,7 @@ public class AngryBird extends ApplicationAdapter {
         Welcome,
         Game,
         Pause,
+        Score,
         End
     }
 
@@ -38,6 +37,7 @@ public class AngryBird extends ApplicationAdapter {
         screens.put(SCREENS_NAME.Welcome, new WelcomeScreen());
         screens.put(SCREENS_NAME.Game, new GameScreen());
         screens.put(SCREENS_NAME.Pause, new PauseScreen());
+        screens.put(SCREENS_NAME.Score, new ScoreScreen((GameScreen) screens.get(SCREENS_NAME.Game)));
         screens.put(SCREENS_NAME.End, new EndScreen());
     }
 
@@ -51,6 +51,10 @@ public class AngryBird extends ApplicationAdapter {
     public void pop() {
         stackScreens.pop();
         Gdx.input.setInputProcessor((InputProcessor) stackScreens.peek());
+    }
+
+    public ApplicationAdapter getScreen(){
+        return stackScreens.peek();
     }
 
     @Override
