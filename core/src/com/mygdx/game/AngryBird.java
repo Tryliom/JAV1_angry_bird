@@ -53,10 +53,11 @@ public class AngryBird extends ApplicationAdapter {
         Gdx.input.setInputProcessor((InputProcessor) stackScreens.peek());
     }
 
-    public ApplicationAdapter getScreen(){
-        return stackScreens.peek();
+    public void goToStart(){
+        for (int i = stackScreens.size()-1; i > 0 ; i--) {
+            pop();
+        }
     }
-
     @Override
     public void create() {
         push(SCREENS_NAME.Welcome);

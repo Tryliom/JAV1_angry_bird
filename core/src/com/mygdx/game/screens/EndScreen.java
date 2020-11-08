@@ -62,7 +62,7 @@ public class EndScreen extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        AngryBird.getInstance().pop();
+        AngryBird.getInstance().goToStart();
         return true;
     }
 
