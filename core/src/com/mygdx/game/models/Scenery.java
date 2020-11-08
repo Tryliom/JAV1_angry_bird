@@ -42,6 +42,7 @@ public final class Scenery {
     public RubberBand rubberBandFront;
     private Texture slingshotBack;
     private Texture slingshotFront;
+    private Word wordToFind;
 
     private ArrayList<PhysicalObject> scene;
     private ArrayList<Word> words = new ArrayList<Word>();
@@ -54,6 +55,8 @@ public final class Scenery {
         bird = new Bird(BIRD_START);
         bird.setFrozen(true);
         wasp = new Wasp(new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 2), new Vector2(20, 50));
+        wordToFind = vocabulary.pickUnusedRandomWord();
+        panel = new Panel(new Vector2(20, Y_MAX), wordToFind);
 
         generateFloor();
         generateTNT(7);
@@ -64,7 +67,6 @@ public final class Scenery {
         rubberBandBack = new RubberBand(bird.getPosition().x + bird.getWidth() - 10, bird.getPosition().y + bird.getHeight() / 2);
         rubberBandFront = new RubberBand(bird.getPosition().x + bird.getWidth() / 2 - 10, bird.getPosition().y + bird.getHeight() / 2);
 
-        panel = new Panel(new Vector2(20, Y_MAX), words.get(MathUtils.random(words.size() - 1)));
     }
 
     /**
@@ -135,13 +137,16 @@ public final class Scenery {
     }
 
     private void generatePigs(int quantity) {
-        words.add(vocabulary.pickUnusedRandomWord());
-
+        words.add(wordToFind);
+        Word word;
         for (int i = 0; i < quantity-1; i++) {
-            Word word = vocabulary.pickRandomWord();
+            do {
+                word = vocabulary.pickRandomWord();
+            }while (words.contains(word));
             words.add(word);
             word.allocated = true;
         }
+        vocabulary.unallocateWord();
 
         for (int i = 0; i < quantity; i++) {
             try {

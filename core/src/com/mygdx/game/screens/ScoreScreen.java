@@ -100,7 +100,7 @@ public class ScoreScreen extends ApplicationAdapter implements InputProcessor {
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         Vector3 scroll = camera.unproject(new Vector3(screenX, screenY, 0)).sub(initialPos);
 
-        vocabularyBoard.touchDragged(scroll.x, scroll.y/10);
+        vocabularyBoard.touchDragged(scroll.x, scroll.y);
         return true;
     }
 

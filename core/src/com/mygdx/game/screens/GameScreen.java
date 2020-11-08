@@ -22,6 +22,7 @@ import com.mygdx.game.models.Scenery;
 import com.mygdx.game.models.Vocabulary;
 import com.mygdx.game.models.Wasp;
 import com.mygdx.game.models.Label;
+import com.mygdx.game.models.Word;
 import com.mygdx.game.providers.VocabularyProvider;
 
 import java.util.Random;

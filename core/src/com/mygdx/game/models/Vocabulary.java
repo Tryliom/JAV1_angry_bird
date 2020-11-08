@@ -1,5 +1,6 @@
 package com.mygdx.game.models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.mygdx.game.models.Word;
 
@@ -15,6 +16,7 @@ public class Vocabulary {
     }
 
     public ArrayList<Word> getWords() {
+        Gdx.app.log("PIGGY", String.valueOf(words.size()));
         return words;
     }
 
@@ -46,5 +48,11 @@ public class Vocabulary {
                 i++;
         }
         return i;
+    }
+
+    public void unallocateWord() {
+        for(Word w: words){
+            w.allocated = false;
+        }
     }
 }
