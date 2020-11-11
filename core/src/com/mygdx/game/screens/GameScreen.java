@@ -22,7 +22,6 @@ import com.mygdx.game.models.Scenery;
 import com.mygdx.game.models.Vocabulary;
 import com.mygdx.game.models.Wasp;
 import com.mygdx.game.models.Label;
-import com.mygdx.game.models.Word;
 import com.mygdx.game.providers.VocabularyProvider;
 
 import java.util.Random;
@@ -87,7 +86,7 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
     }
 
     public void newScene() {
-        if (vocabulary.countUsedWords() == 0)
+        if (vocabulary.countUnFoundWords() == 0)
             vocabulary = vocabularyProvider.pickRandomVocabulary();
 
         scenery = new Scenery(vocabulary);
@@ -111,7 +110,6 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         if (scenery.isOutOfScenery(bird)) {
             bird.reset();
         } else if (bird.overlaps(wasp)) {
-            this.create();
             AngryBird.getInstance().push(AngryBird.SCREENS_NAME.End);
         } else if (scenery.overlaps(bird) != null) {
             PhysicalObject touchedObject = scenery.overlaps(bird);
@@ -196,7 +194,6 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
     public void manageButtons(Button button) {
         switch (button.getName()) {
             case "score":
-                bird.reset(); // i not founnd how to pause correctly the game...
                 Gdx.app.log("GameScreen", "score touched");
                 AngryBird.getInstance().push(AngryBird.SCREENS_NAME.Score);
                 break;

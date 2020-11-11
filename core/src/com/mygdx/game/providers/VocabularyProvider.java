@@ -31,7 +31,7 @@ public class VocabularyProvider {
         Vocabulary vocabulary;
         do{
             vocabulary = vocabularies.get(MathUtils.random(0, vocabularies.size() - 1));
-        }while (vocabulary.countUsedWords() == 0);
+        }while (vocabulary.countUnFoundWords() == 0);
         return vocabulary;
     }
     

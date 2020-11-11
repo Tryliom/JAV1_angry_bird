@@ -4,24 +4,16 @@ package com.mygdx.game.models;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.customExceptions.OutOfSceneryException;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
 import static com.mygdx.game.screens.GameScreen.BIRD_START;
 import static com.mygdx.game.screens.GameScreen.WORLD_WIDTH;
 import static com.mygdx.game.screens.GameScreen.FLOOR_HEIGHT;
 import static com.mygdx.game.screens.GameScreen.WORLD_HEIGHT;
 import static com.mygdx.game.screens.GameScreen.rand;
-import static com.mygdx.game.screens.GameScreen.startTime;
 
 public final class Scenery {
 
@@ -55,7 +47,7 @@ public final class Scenery {
         bird = new Bird(BIRD_START);
         bird.setFrozen(true);
         wasp = new Wasp(new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 2), new Vector2(20, 50));
-        wordToFind = vocabulary.pickUnusedRandomWord();
+        wordToFind = vocabulary.pickUnFoundRandomWord();
         panel = new Panel(new Vector2(20, Y_MAX), wordToFind);
 
         generateFloor();
@@ -141,12 +133,14 @@ public final class Scenery {
         Word word;
         for (int i = 0; i < quantity-1; i++) {
             do {
+                //get 4 extra words for the game, even if they have already been found
+                // If vocabulary has only one last word, player can continue to try to find the word
                 word = vocabulary.pickRandomWord();
             }while (words.contains(word));
             words.add(word);
             word.allocated = true;
         }
-        vocabulary.unallocateWord();
+        vocabulary.unAllocateWord();
 
         for (int i = 0; i < quantity; i++) {
             try {

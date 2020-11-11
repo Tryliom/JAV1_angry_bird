@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.mygdx.game.screens.EndScreen;
@@ -12,7 +13,7 @@ import com.mygdx.game.screens.WelcomeScreen;
 import java.util.HashMap;
 import java.util.Stack;
 
-public class AngryBird extends ApplicationAdapter {
+public class AngryBird extends Game {
 
     private static AngryBird instance;
     private Stack<ApplicationAdapter> stackScreens;

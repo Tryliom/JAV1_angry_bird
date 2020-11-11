@@ -34,23 +34,23 @@ public class Vocabulary {
     public  Word pickRandomWord(){
         return  words.get(MathUtils.random(0,words.size()-1));
     }
-    public Word pickUnusedRandomWord(){
+    public Word pickUnFoundRandomWord(){
         Word word;
         do {
             word = words.get(MathUtils.random(0,words.size()-1));
-        } while (word.allocated);
+        } while (word.found);
         return word;
     }
-    public int countUsedWords(){
+    public int countUnFoundWords(){
         int i = 0;
         for (Word word : words) {
-            if(word.allocated == false)
+            if(word.found == false)
                 i++;
         }
         return i;
     }
 
-    public void unallocateWord() {
+    public void unAllocateWord() {
         for(Word w: words){
             w.allocated = false;
         }
