@@ -1,14 +1,14 @@
 package com.mygdx.game.providers;
 
 import com.badlogic.gdx.math.MathUtils;
-import com.mygdx.game.models.Vocabulary;
+import com.mygdx.game.models.VocabularyOld;
 import com.mygdx.game.models.Word;
 
 import java.util.ArrayList;
 
 public class VocabularyProvider {
     static VocabularyProvider singleInstance = null;
-    public ArrayList<Vocabulary> vocabularies;
+    public ArrayList<VocabularyOld> vocabularies;
 
     public static VocabularyProvider getInstance() {
         if (singleInstance == null)
@@ -23,12 +23,12 @@ public class VocabularyProvider {
     public int totalOfVocabularies(){
         return vocabularies.size();
     }
-    public Vocabulary pickVocabulary(int index) {
+    public VocabularyOld pickVocabulary(int index) {
         return vocabularies.get(index);
     }
 
-    public Vocabulary pickRandomVocabulary() {
-        Vocabulary vocabulary;
+    public VocabularyOld pickRandomVocabulary() {
+        VocabularyOld vocabulary;
         do{
             vocabulary = vocabularies.get(MathUtils.random(0, vocabularies.size() - 1));
         }while (vocabulary.countUnFoundWords() == 0);
@@ -39,7 +39,7 @@ public class VocabularyProvider {
         Word word;
 
         //region money
-        Vocabulary vocabulary = new Vocabulary("money");
+        VocabularyOld vocabulary = new VocabularyOld("money");
         word = new Word("la banque", "the bank");
         vocabulary.addWord(word);
         word = new Word("l''argent liquide", "cash");
@@ -117,7 +117,7 @@ public class VocabularyProvider {
         vocabularies.add(vocabulary);
         //endregion
         //region meubles
-        vocabulary = new Vocabulary("meubles");
+        vocabulary = new VocabularyOld("meubles");
         word = new Word("une table", "a table");
         vocabulary.addWord(word);
         word = new Word("une chaise", "a chair");
@@ -161,7 +161,7 @@ public class VocabularyProvider {
         vocabularies.add(vocabulary);
         //endregion
         //region color
-        vocabulary = new Vocabulary("colors");
+        vocabulary = new VocabularyOld("colors");
         word = new Word("blanc", "white");
         vocabulary.addWord(word);
         word = new Word("bleu clair", "light blue");
@@ -201,7 +201,7 @@ public class VocabularyProvider {
         vocabularies.add(vocabulary);
         //endregion
         //region family
-        vocabulary = new Vocabulary("family");
+        vocabulary = new VocabularyOld("family");
         word = new Word("le père", "the father");
         vocabulary.addWord(word);
         word = new Word("les parents", "the parents");

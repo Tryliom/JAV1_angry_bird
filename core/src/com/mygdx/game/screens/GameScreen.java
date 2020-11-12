@@ -11,6 +11,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.mygdx.game.AngryBird;
+import com.mygdx.game.customExceptions.TranslationDoesNotExistException;
+import com.mygdx.game.exam.VocProvider;
+import com.mygdx.game.exam.Vocabulary;
 import com.mygdx.game.interfaces.Scoreable;
 import com.mygdx.game.models.Bird;
 import com.mygdx.game.models.Bubble;
@@ -19,10 +22,8 @@ import com.mygdx.game.models.Panel;
 import com.mygdx.game.models.PhysicalObject;
 import com.mygdx.game.models.Pig;
 import com.mygdx.game.models.Scenery;
-import com.mygdx.game.models.Vocabulary;
 import com.mygdx.game.models.Wasp;
 import com.mygdx.game.models.Label;
-import com.mygdx.game.providers.VocabularyProvider;
 
 import java.util.Random;
 
@@ -53,7 +54,7 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
     private int score;
     private Button scoreButton;
     private Button pauseButton;
-    private VocabularyProvider vocabularyProvider;
+    private VocProvider vocabularyProvider;
     public Vocabulary vocabulary;
     private Label scoreLabel;
 
@@ -65,8 +66,8 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         scoreLabel = new Label(Color.WHITE);
 
         background = new Texture(Gdx.files.internal("background.jpg"));
-        vocabularyProvider = vocabularyProvider.getInstance();
-        vocabulary = vocabularyProvider.pickRandomVocabulary();
+        vocabularyProvider = VocProvider.getInstance();
+        vocabulary = vocabularyProvider.pickAVoc();
 //        vocabulary = vocabularyProvider.pickVocabulary(0);
         //buttons
         pauseButton = new Button("pause.png", "pause", new Vector2(WORLD_WIDTH / 2 + 75, WORLD_HEIGHT - 150), 100, 100);
@@ -74,7 +75,11 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         scoreButton = new Button("score.png", "score", new Vector2(WORLD_WIDTH / 3 + 75, pauseButton.getY()), 150, 100);
         scoreButton.setX(pauseButton.getX() - scoreButton.getWidth() - 20);
 
-        newScene();
+        try {
+            newScene();
+        } catch (TranslationDoesNotExistException e) {
+            e.printStackTrace();
+        }
 
         camera = new OrthographicCamera();
         camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -85,10 +90,7 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         Gdx.input.setInputProcessor(this);
     }
 
-    public void newScene() {
-        if (vocabulary.countUnFoundWords() == 0)
-            vocabulary = vocabularyProvider.pickRandomVocabulary();
-
+    public void newScene() throws TranslationDoesNotExistException {
         scenery = new Scenery(vocabulary);
         try {
             scenery.add(pauseButton);
@@ -98,11 +100,11 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         }
         bird = scenery.bird;
         wasp = scenery.wasp;
-        bubble = new Bubble(new Vector2(-Bubble.WIDTH, 0), vocabulary.pickRandomWord(), 0);
+        bubble = new Bubble(new Vector2(-Bubble.WIDTH, 0), vocabulary.pickAWord(), 0);
         bubbleTime = 2;
     }
 
-    public void update() {
+    public void update() throws TranslationDoesNotExistException {
         scoreLabel.setText(String.format("Score: %s", score));
 
         float dt = Gdx.graphics.getDeltaTime(); // number of milliseconds elapsed since last render
@@ -120,11 +122,10 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
         if (bubble.getDuration() > 0) bubble.countdown(dt);
     }
 
-    public void calculateScore(PhysicalObject object) {
+    public void calculateScore(PhysicalObject object) throws TranslationDoesNotExistException {
         if (Pig.class.equals(object.getClass())) {
             Pig pig = (Pig) object;
-            if (pig.getWord().getEnglishWord() == scenery.panel.getWord().getEnglishWord()) {
-                vocabulary.findWord(scenery.panel.getWord()).found = true;
+            if (pig.getWord().getValue(AngryBird.getInstance().getFirst().getISO_639_1()) == scenery.panel.getWord().getValue(AngryBird.getInstance().getFirst().getISO_639_1())) {
                 score += pig.incrementScore();
                 newScene();
                 return;
@@ -137,7 +138,11 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public void render() {
-        update();
+        try {
+            update();
+        } catch (TranslationDoesNotExistException e) {
+            e.printStackTrace();
+        }
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
@@ -179,12 +184,20 @@ public class GameScreen extends ApplicationAdapter implements InputProcessor {
             return true;
 
         if (Pig.class.equals(object.getClass())) {
-            bubble = new Bubble(new Vector2(object.getX(), object.getY() + object.getHeight()), ((Pig) object).getWord(), bubbleTime);
+            try {
+                bubble = new Bubble(new Vector2(object.getX(), object.getY() + object.getHeight()), ((Pig) object).getWord(), bubbleTime);
+            } catch (TranslationDoesNotExistException e) {
+                e.printStackTrace();
+            }
             bubble.translateX(-bubble.getWidth() / 1.8f);
         } else if (Bird.class.equals(object.getClass())) {
             bird.isDragged = true;
         } else if (Panel.class.equals(object.getClass())) {
-            Gdx.app.log("GameScreen", ((Panel) object).getWord().getEnglishWord());
+            try {
+                Gdx.app.log("GameScreen", ((Panel) object).getWord().getValue(AngryBird.getInstance().getFirst().getISO_639_1()));
+            } catch (TranslationDoesNotExistException e) {
+                e.printStackTrace();
+            }
         } else if (Button.class.equals(object.getClass())) {
             manageButtons((Button) object);
         }

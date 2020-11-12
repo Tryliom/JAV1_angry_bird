@@ -32,6 +32,10 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
 
     public static final int WORLD_WIDTH = 1600;
     public static final int WORLD_HEIGHT = 900;
+
+    public static final int POS_LANGUAGE1 = 700;
+    public static final int POS_LANGUAGE2 = 1350;
+
     @Override
     public void create() {
         batch = new SpriteBatch();
@@ -57,15 +61,16 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
         ArrayList<Language> list = VocProvider.getInstance().getLanguages();
         int yIncrement = 0;
         for (Language lang : list) {
+            int y = WORLD_HEIGHT - WORLD_HEIGHT / 4 - yIncrement;
             if (this.firstLanguage == null && (this.secondLanguage == null || !this.secondLanguage.equals(lang)))
-                this.buttonChooseFirstLanguage.add(new ButtonExam(lang.getDisplayName(), lang.getISO_639_1(), new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 2 - 150 + yIncrement), 100, 20));
+                this.buttonChooseFirstLanguage.add(new ButtonExam(lang.getDisplayName(), lang.getISO_639_1(), new Vector2(POS_LANGUAGE1, y)));
             if (this.secondLanguage == null && (this.firstLanguage == null || !this.firstLanguage.equals(lang)))
-                this.buttonChooseSecondLanguage.add(new ButtonExam(lang.getDisplayName(), lang.getISO_639_1(), new Vector2(WORLD_WIDTH / 2 + 120, WORLD_HEIGHT / 2 - 150 + yIncrement), 100, 20));
-            yIncrement += 30;
+                this.buttonChooseSecondLanguage.add(new ButtonExam(lang.getDisplayName(), lang.getISO_639_1(), new Vector2(POS_LANGUAGE2, y)));
+            yIncrement += 200;
         }
 
         if (canDisplayStartButton()) {
-            this.start = new ButtonExam("Démarrer", "start", new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 4), 100, 20);
+            this.start = new ButtonExam("Démarrer", "start", new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 4));
         }
     }
 
@@ -74,12 +79,12 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
         batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
-        title.draw(batch, "Exercice de ", WORLD_WIDTH / 2 - 100, WORLD_HEIGHT / 2);
+        title.draw(batch, "Exercice de ", 10, WORLD_HEIGHT / 2 + 50);
         if (this.firstLanguage != null)
-            title.draw(batch, this.firstLanguage.getDisplayName(), WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
-        title.draw(batch, "en", WORLD_WIDTH / 2 + 110, WORLD_HEIGHT / 2);
+            title.draw(batch, this.firstLanguage.getDisplayName(), POS_LANGUAGE1 - 200, WORLD_HEIGHT / 2 + 50);
+        title.draw(batch, "en", 950, WORLD_HEIGHT / 2 + 50);
         if (this.secondLanguage != null)
-            title.draw(batch, this.secondLanguage.getDisplayName(), WORLD_WIDTH / 2, WORLD_HEIGHT / 2);
+            title.draw(batch, this.secondLanguage.getDisplayName(), POS_LANGUAGE2 - 200, WORLD_HEIGHT / 2 + 50);
         for (ButtonExam btn : this.buttonChooseFirstLanguage)
             btn.draw(batch);
         for (ButtonExam btn : this.buttonChooseSecondLanguage)
@@ -144,7 +149,7 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
             }
         }
 
-        if (this.start.isTouched(new Vector2(actualPos.x, actualPos.y)) && canDisplayStartButton()) {
+        if (canDisplayStartButton() && this.start.isTouched(new Vector2(actualPos.x, actualPos.y))) {
             AngryBird.getInstance().push(AngryBird.SCREENS_NAME.Game);
         }
 
@@ -173,5 +178,13 @@ public class WelcomeScreen extends ApplicationAdapter implements InputProcessor 
 
     public Boolean canDisplayStartButton() {
         return this.firstLanguage != null && this.secondLanguage != null;
+    }
+
+    public Language getFirstLanguage() {
+        return firstLanguage;
+    }
+
+    public Language getSecondLanguage() {
+        return secondLanguage;
     }
 }

@@ -1,5 +1,6 @@
 package com.mygdx.game.exam;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -13,12 +14,13 @@ public class ButtonExam extends TextualObject {
     private GlyphLayout glyphLayout;
 
 
-    public ButtonExam(String text, String value, Vector2 position, int width, int height) {
-        super("button.png", position, width, height, text);
+    public ButtonExam(String text, String value, Vector2 position) {
+        super("button.png", new Vector2(position.x - 400/2, position.y - 175/2), 400, 175, text);
         this.value = value;
-        font.setColor(Color.BLACK);
+        font.setColor(Color.WHITE);
         font.getData().setScale(4);
         glyphLayout = new GlyphLayout();
+        glyphLayout.setText(font, text);
     }
 
     public String getValue() {
@@ -26,8 +28,8 @@ public class ButtonExam extends TextualObject {
     }
 
     public void draw(Batch batch) {
-        batch.draw(this.getTexture(), this.getWidth(), this.getHeight());
-        font.draw(batch, glyphLayout, this.getX(), this.getY());
+        batch.draw(this.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        font.draw(batch, glyphLayout, this.getX() + (this.getWidth() - glyphLayout.width)/2, this.getY() + (this.getHeight() + glyphLayout.height)/2);
     }
 
     public Boolean isTouched(Vector2 point) {

@@ -1,5 +1,7 @@
 package com.mygdx.game.exam;
 
+import com.badlogic.gdx.Gdx;
+
 import java.util.ArrayList;
 
 public class Vocabulary {
@@ -18,5 +20,10 @@ public class Vocabulary {
     public SemanticWord pickAWord() {
         int randomWord = (int) Math.floor(Math.random() * this.list.size());
         return this.list.get(randomWord);
+    }
+
+
+    public String getVocName() {
+        return vocName;
     }
 }

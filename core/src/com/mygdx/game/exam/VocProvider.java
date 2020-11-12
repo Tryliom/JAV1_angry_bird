@@ -1,5 +1,7 @@
 package com.mygdx.game.exam;
 
+import com.badlogic.gdx.Gdx;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -25,7 +27,7 @@ public class VocProvider {
     }
 
     private void initVocabulary() {
-        vocs = new ArrayList<Vocabulary>();
+        this.vocs = new ArrayList<Vocabulary>();
         SemanticWord sw;
         Vocabulary voc = new Vocabulary("L'argent");
 

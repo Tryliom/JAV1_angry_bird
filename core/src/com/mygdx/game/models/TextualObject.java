@@ -1,9 +1,10 @@
 package com.mygdx.game.models;
 
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.exam.SemanticWord;
 
 public abstract class TextualObject extends PhysicalObject {
-    protected Word word;
+    protected SemanticWord word;
     private String text;
 
     public TextualObject(String picname, Vector2 position, int width, int height, String text) {
@@ -12,11 +13,11 @@ public abstract class TextualObject extends PhysicalObject {
         setOrigin(position.x, position.y);
     }
 
-    public void setWord(Word word) {
+    public void setWord(SemanticWord word) {
         this.word = word;
     }
 
-    public Word getWord() {
+    public SemanticWord getWord() {
         return word;
     }
 

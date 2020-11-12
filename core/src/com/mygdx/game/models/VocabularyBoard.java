@@ -2,6 +2,7 @@ package com.mygdx.game.models;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.mygdx.game.exam.Vocabulary;
 
 import java.util.ArrayList;
 
@@ -32,7 +33,7 @@ public class VocabularyBoard {
     private void createLabels() {
         float width;
         int i = 0;
-        for (Word w : vocabulary.getWords()) {
+        /*for (Word w : vocabulary.) {
             englishWords.add(new Label(w.getEnglishWord(), Color.BLACK));
             frenchWords.add(new Label(w.found ? w.getFrenchWord() : "", Color.BLACK));
 //            frenchWords.add(new Label(w.getFrenchWord() , Color.BLACK));
@@ -40,7 +41,7 @@ public class VocabularyBoard {
             Label englishWord = englishWords.get(englishWords.size() - 1);
             width = englishWord.getWidth() + 30;
             maxWidthEnglishWord = maxWidthEnglishWord < width ? width : maxWidthEnglishWord;
-        }
+        }*/
     }
 
     private void placeLabels(float scrollPosYFirstElem) {

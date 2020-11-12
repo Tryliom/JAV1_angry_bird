@@ -6,11 +6,11 @@ import com.mygdx.game.models.Word;
 
 import java.util.ArrayList;
 
-public class Vocabulary {
+public class VocabularyOld {
     String vocName;
     ArrayList<Word> words;
 
-    public Vocabulary(String vocName){
+    public VocabularyOld(String vocName){
         this.vocName = vocName;
         words = new ArrayList<Word>();
     }

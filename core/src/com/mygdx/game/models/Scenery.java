@@ -15,6 +15,11 @@ import static com.mygdx.game.screens.GameScreen.FLOOR_HEIGHT;
 import static com.mygdx.game.screens.GameScreen.WORLD_HEIGHT;
 import static com.mygdx.game.screens.GameScreen.rand;
 
+import com.mygdx.game.customExceptions.TranslationDoesNotExistException;
+import com.mygdx.game.exam.SemanticWord;
+import com.mygdx.game.exam.VocProvider;
+import com.mygdx.game.exam.Vocabulary;
+
 public final class Scenery {
 
     public static final int X_MIN = 400;
@@ -34,12 +39,12 @@ public final class Scenery {
     public RubberBand rubberBandFront;
     private Texture slingshotBack;
     private Texture slingshotFront;
-    private Word wordToFind;
+    private SemanticWord wordToFind;
 
     private ArrayList<PhysicalObject> scene;
-    private ArrayList<Word> words = new ArrayList<Word>();
+    private ArrayList<SemanticWord> words = new ArrayList<SemanticWord>();
 
-    public Scenery(Vocabulary vocabulary) {
+    public Scenery(Vocabulary vocabulary) throws TranslationDoesNotExistException {
 
         this.scene = new ArrayList<PhysicalObject>();
         this.vocabulary = vocabulary;
@@ -47,7 +52,7 @@ public final class Scenery {
         bird = new Bird(BIRD_START);
         bird.setFrozen(true);
         wasp = new Wasp(new Vector2(WORLD_WIDTH / 2, WORLD_HEIGHT / 2), new Vector2(20, 50));
-        wordToFind = vocabulary.pickUnFoundRandomWord();
+        wordToFind = VocProvider.getInstance().pickAVoc().pickAWord();
         panel = new Panel(new Vector2(20, Y_MAX), wordToFind);
 
         generateFloor();
@@ -130,17 +135,15 @@ public final class Scenery {
 
     private void generatePigs(int quantity) {
         words.add(wordToFind);
-        Word word;
+        SemanticWord word;
         for (int i = 0; i < quantity-1; i++) {
             do {
                 //get 4 extra words for the game, even if they have already been found
                 // If vocabulary has only one last word, player can continue to try to find the word
-                word = vocabulary.pickRandomWord();
+                word = vocabulary.pickAWord();
             }while (words.contains(word));
             words.add(word);
-            word.allocated = true;
         }
-        vocabulary.unAllocateWord();
 
         for (int i = 0; i < quantity; i++) {
             try {

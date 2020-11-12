@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
+import com.mygdx.game.exam.Language;
 import com.mygdx.game.screens.EndScreen;
 import com.mygdx.game.screens.GameScreen;
 import com.mygdx.game.screens.PauseScreen;
@@ -72,5 +73,13 @@ public class AngryBird extends Game {
     @Override
     public void dispose() {
         super.dispose();
+    }
+
+    public Language getFirst() {
+        return ((WelcomeScreen) this.screens.get(SCREENS_NAME.Welcome)).getFirstLanguage();
+    }
+
+    public Language getSecond() {
+        return ((WelcomeScreen) this.screens.get(SCREENS_NAME.Welcome)).getSecondLanguage();
     }
 }

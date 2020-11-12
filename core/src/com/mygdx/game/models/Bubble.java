@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.AngryBird;
+import com.mygdx.game.customExceptions.TranslationDoesNotExistException;
+import com.mygdx.game.exam.SemanticWord;
 
 public class Bubble extends TextualObject {
     private static final String PICNAME = "bubble.png";
@@ -15,7 +18,7 @@ public class Bubble extends TextualObject {
     protected static GlyphLayout glyphLayout;
     protected BitmapFont font;
 
-    public Bubble(Vector2 position, Word word, float duration) {
+    public Bubble(Vector2 position, SemanticWord word, float duration) throws TranslationDoesNotExistException {
         super(PICNAME, position, WIDTH, HEIGHT, "");
         this.duration = duration;
         this.word = word;
@@ -23,7 +26,7 @@ public class Bubble extends TextualObject {
         font = new BitmapFont();
         font.setColor(Color.BLACK);
         font.getData().setScale(3);
-        glyphLayout = new GlyphLayout(font, word.getFrenchWord());
+        glyphLayout = new GlyphLayout(font, word.getValue(AngryBird.getInstance().getSecond().getISO_639_1()));
 
         setSize(glyphLayout.width * 2, glyphLayout.height * 4);
     }
