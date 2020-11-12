@@ -7,6 +7,6 @@ import com.mygdx.game.AngryBird;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		new LwjglApplication(new AngryBird(), config);
+		new LwjglApplication(AngryBird.getInstance(), config);
 	}
 }

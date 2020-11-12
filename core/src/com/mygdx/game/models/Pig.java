@@ -1,9 +1,7 @@
 package com.mygdx.game.models;
 
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.AngryBird;
 import com.mygdx.game.interfaces.Scoreable;
-import com.mygdx.game.screens.GameScreen;
 
 public class Pig extends TextualObject implements Scoreable {
     private static final int points = 10;
@@ -12,7 +10,7 @@ public class Pig extends TextualObject implements Scoreable {
     public static final int HEIGHT = 80;
 
     public Pig(Vector2 position) {
-        super(PICNAME, position, WIDTH, HEIGHT);
+        super(PICNAME, position, WIDTH, HEIGHT, "");
     }
 
     public String sayWord() {

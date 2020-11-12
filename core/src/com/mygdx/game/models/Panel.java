@@ -15,7 +15,7 @@ public class Panel extends TextualObject {
     protected BitmapFont font;
 
     public Panel(Vector2 position, Word word) {
-        super(PICNAME, position, WIDTH, HEIGHT);
+        super(PICNAME, position, WIDTH, HEIGHT, "");
         this.word = word;
         setY(getY()-getHeight());
 

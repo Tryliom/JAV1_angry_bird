@@ -16,7 +16,7 @@ public class Bubble extends TextualObject {
     protected BitmapFont font;
 
     public Bubble(Vector2 position, Word word, float duration) {
-        super(PICNAME, position, WIDTH, HEIGHT);
+        super(PICNAME, position, WIDTH, HEIGHT, "");
         this.duration = duration;
         this.word = word;
 
